@@ -3,7 +3,7 @@ class Store {
     // Состояние приложения (данные)
     this.state = initState;
     // Подписчики на изменение state
-    this.listners = [];
+    this.listeners = [];
   }
 
   /**
@@ -11,10 +11,10 @@ class Store {
    * @param callback {Function}
    */
   subscribe(callback) {
-    this.listners.push(callback);
+    this.listeners.push(callback);
     // Возвращаем функцию для отписки
     return () => {
-      this.listners = this.listners.filter(item => item !== callback);
+      this.listeners = this.listeners.filter(item => item !== callback);
     }
   }
 
@@ -33,8 +33,8 @@ class Store {
   setState(newState) {
     this.state = newState;
     // Оповещаем всех подписчиков об изменении стейта
-    for (const lister of this.listners) {
-      lister(this.state);
+    for (const listner of this.listeners) {
+      listner(this.state);
     }
   }
 
@@ -75,6 +75,9 @@ class Store {
       items: this.state.items.map(item => {
         if (item.code === code){
           item.selected = !item.selected;
+          // при клике добавляем к счетчику 1
+          // если значение falsy, значит счетчик еще пуст и просто ставим 1
+          item.clicks = item.clicks + 1 || 1;
         }
         return item;
       })
