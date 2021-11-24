@@ -6,18 +6,6 @@ import './style.css';
  * @param store {Store} Состояние с действиями
  */
 function App({ store }) {
-
-	function checkDeclension({ clicks }) {
-		const lastDigit = clicks % 10;
-
-		if (lastDigit === 2 || lastDigit === 3 || lastDigit === 4) {
-			return clicks > 11 && clicks < 15
-        ? `${clicks} раз`
-        : `${clicks} раза`;
-		}
-		return `${clicks} раз`;
-	}
-
 	return (
 		<div className="App">
 			<div className="App__head">
@@ -39,7 +27,7 @@ function App({ store }) {
 								<div className="Item__number">{item.code}</div>
 								<div className="Item__title">
 									{item.title}
-									{item.clicks && ` | Выделялся ${checkDeclension(item)}`}
+									{item.clicks && ` | Выделялся ${store.checkDeclension(item)}`}
 								</div>
 								<div className="Item__actions">
 									<button onClick={() => store.deleteItem(item.code)}>

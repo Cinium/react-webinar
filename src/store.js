@@ -83,6 +83,17 @@ class Store {
       })
     });
   }
+
+  checkDeclension({ clicks }) {
+		const lastDigit = clicks % 10;
+
+		if (lastDigit === 2 || lastDigit === 3 || lastDigit === 4) {
+			return clicks > 11 && clicks < 15
+        ? `${clicks} раз`
+        : `${clicks} раза`;
+		}
+		return `${clicks} раз`;
+	}
 }
 
 export default Store;
