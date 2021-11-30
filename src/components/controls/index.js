@@ -1,20 +1,27 @@
-import React from "react";
+import React, { memo } from 'react';
 import propTypes from 'prop-types';
+import plural from 'plural-ru';
 import './styles.css';
 
-function Controls({onCreate}){
-  console.log('Controls');
-  return <div className='Controls'>
-    <button onClick={onCreate}> Добавить</button>
-  </div>
+function Controls({ totalCount, totalPrice, onOpenModal }) {
+	return (
+		<div className="Controls">
+			<div className="Controls__title">В корзине: </div>
+			<div className="Controls__subtitle">
+				{plural(totalCount, '%d товар', '%d товара', '%d товаров')} /{' '}
+				{totalPrice} &#8381;
+			</div>
+			<button onClick={onOpenModal}> Перейти</button>
+		</div>
+	);
 }
 
 Controls.propTypes = {
-  onCreate: propTypes.func.isRequired
-}
+	onOpenModal: propTypes.func.isRequired,
+};
 
 Controls.defaultProps = {
-  onCreate: () => {}
-}
+	onOpenModal: () => {},
+};
 
-export default React.memo(Controls);
+export default memo(Controls);
