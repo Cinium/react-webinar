@@ -1,14 +1,14 @@
 /* Контрол с общими действиями */
 .Controls {
-	display: flex;
-	justify-content: flex-end;
-	padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
 }
 
 .Controls__subtitle {
-	font-weight: bold;
-	font-size: 18px;
-	line-height: 21px;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
 
-	margin: 0 14px 0 15px;
+  margin: 0 14px 0 15px;
 }

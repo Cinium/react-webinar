@@ -1,72 +1,72 @@
 .Modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
 }
 
 .Modal.Modal_opened {
-	visibility: visible;
+  visibility: visible;
 }
 
 .Modal__container {
-	display: flex;
-	flex-direction: column;
-	position: absolute;
-	background: white;
-	border-radius: 10px;
-	width: 66.666vw;
-	height: 58.886vh;
-	overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background: white;
+  border-radius: 10px;
+  width: 66.666vw;
+  height: 58.886vh;
+  overflow: hidden;
 }
 
 .Modal__items {
-	overflow-y: auto;
-	height: auto;
+  overflow-y: auto;
+  height: auto;
 }
 
 .Modal__head {
-	background: #f5f5f5;
-	padding: 20px 32px 23px 20px;
-	margin-bottom: 74px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  background: #f5f5f5;
+  padding: 20px 32px 23px 20px;
+  margin-bottom: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .Modal__title {
-	font-weight: bold;
-	font-size: 2rem;
-	line-height: 2.3125rem;
-	display: inline;
+  font-weight: bold;
+  font-size: 2rem;
+  line-height: 2.3125rem;
+  display: inline;
 }
 
 .Modal__total {
-	display: flex;
-	justify-content: flex-end;
-	margin: 26px 0;
+  display: flex;
+  justify-content: flex-end;
+  margin: 26px 0;
 
-	font-weight: bold;
-	font-size: 18px;
-	line-height: 21px;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
 }
 
 .Modal__total-price {
-	margin-left: 49px;
+  margin-left: 49px;
 }
 
 .Modal__total-count {
-	padding-right: 18px;
-	padding-left: 51px;
+  padding-right: 18px;
+  padding-left: 51px;
 }
 
 .Modal__overlay {
-	background-color: rgba(0, 0, 0, 0.7);
-	width: 100%;
-	height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
 }
