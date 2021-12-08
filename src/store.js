@@ -97,46 +97,66 @@ class Store {
     let updatedCount = this.state.basket.totalCount;
     let updatedPrice = this.state.basket.totalPrice;
 
+    // this.setState({
+    //   ...this.state,
+    //   basket: {
+    //     items:
+    //       // если индекс больше -1, значит товар уже есть в корзине
+    //       index > -1
+    //         ? // перебираем корзину, добавляя количество
+    //           this.state.basket.items.map(item => {
+    //             if (item.code === this.state.basket.items[index].code) {
+    //               item = { ...item };
+    //               item.count++;
+
+    //               updatedPrice += Number(item.price.split(' ').join(''));
+    //               updatedCount++;
+    //             }
+    //             return item;
+    //           })
+    //         : // иначе добавляем новый товар
+    //           [
+    //             ...this.state.basket.items,
+    //             {
+    //               ...this.state.items.find(item => {
+    //                 if (item.code === code) {
+    //                   updatedPrice += Number(item.price.split(' ').join(''));
+    //                   updatedCount++;
+    //                   return true;
+    //                 }
+    //                 return false;
+    //               }),
+    //               count: 1,
+    //               order: this.state.basket.length + 1,
+    //             },
+    //           ],
+    //     totalPrice: updatedPrice,
+    //     totalCount: updatedCount,
+    //   },
+    // });
+
+    // let newItem = this.state.items.find(item => item.code === code);
+    // newItem.count = newItem.count ? newItem.count + 1 : 1;
+    // newItem.order = newItem.order ? newItem.order : this.state.basket.items.length + 1
+
+    let item = this.state.items.find(item => item.code === code);
+    item.count = item.count ? item.count + 1 : 1;
+    item.order = item.order ? item.order : this.state.basket.items.length + 1
+
     this.setState({
       ...this.state,
       basket: {
-        items:
-          // если индекс больше -1, значит товар уже есть в корзине
-          index > -1
-            ? // перебираем корзину, добавляя количество
-              this.state.basket.items.map(item => {
-                if (item.code === this.state.basket.items[index].code) {
-                  item = { ...item };
-                  item.count++;
-
-                  updatedPrice += Number(item.price.split(' ').join(''));
-                  updatedCount++;
-                }
-                return item;
-              })
-            : // иначе добавляем новый товар
-              [
-                ...this.state.basket.items,
-                {
-                  ...this.state.items.find(item => {
-                    if (item.code === code) {
-                      updatedPrice += Number(item.price.split(' ').join(''));
-                      updatedCount++;
-                      return true;
-                    }
-                    return false;
-                  }),
-                  count: 1,
-                  order: this.state.basket.length + 1,
-                },
-              ],
-        totalPrice: updatedPrice,
-        totalCount: updatedCount,
+        items: [...new Set(this.state.basket.items).add(item)],
+        totalPrice:
+          this.state.basket.totalPrice +
+          Number(item.price.split(' ').join('')),
+        totalCount: this.state.basket.totalCount + 1,
       },
     });
+    
+    console.log('items:', this.state.items, 'basket:', this.state.basket.items)
+    
   }
-
-  updateTotal() {}
 }
 
 export default Store;

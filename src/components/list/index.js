@@ -4,6 +4,7 @@ import Item from '../item';
 import './styles.css';
 
 function List({ items, actions }) {
+
   return (
     <div className="List">
       {items.map(item => (
