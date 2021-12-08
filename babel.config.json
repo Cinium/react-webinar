@@ -2,10 +2,14 @@
   "presets": ["@babel/env", "@babel/react"],
   "env": {
     "development": {
-      "plugins": []
+      "plugins": [
+        "@babel/plugin-transform-runtime"
+      ]
     },
     "production": {
-      "plugins": []
+      "plugins": [
+        "@babel/plugin-transform-runtime"
+      ]
     }
   }
 }

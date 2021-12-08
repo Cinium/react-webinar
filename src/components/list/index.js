@@ -1,40 +1,29 @@
-import React, { memo } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
-import Item from '../item';
 import './styles.css';
 
-function List({ items, actions }) {
-
+function List({items, renderItem}) {
   return (
-    <div className="List">
-      {items.map(item => (
-        <div className="List__item" key={item.code}>
-          <Item
-            item={item}
-            actions={
-              actions &&
-              // если в будущем экшнов надо будет больше, достаточно будет закинуть их в пропс
-              actions.map((action, i) => (
-                <button key={i} onClick={() => action.callback(item.code)}>
-                  {action.name}
-                </button>
-              ))
-            }
-          />
+    <div className='List'>
+      {items.map(item =>
+        <div key={item._id} className='List__item'>
+          {renderItem(item)}
         </div>
-      ))}
+      )}
     </div>
   );
 }
 
 List.propTypes = {
   items: propTypes.arrayOf(propTypes.object).isRequired,
-  actions: propTypes.arrayOf(propTypes.object),
-};
+  renderItem: propTypes.func
+}
 
 List.defaultProps = {
   items: [],
-  actions: [],
-};
+  renderItem: (item) => {
+    return item.toString()
+  }
+}
 
-export default memo(List);
+export default React.memo(List);
