@@ -3,10 +3,12 @@ import propTypes from 'prop-types';
 import plural from "plural-ru";
 import numberFormat from "../../utils/number-format";
 import './styles.css';
+import { Link } from 'react-router-dom';
 
 function BasketSimple({sum, amount, onOpen}) {
   return (
     <div className='BasketSimple'>
+      <Link to="/" className="BasketSimple__main-link" onClick={() => setHead('')} >Главная</Link>
       <span className="BasketSimple__label">В корзине:</span>
       <span className="BasketSimple__total">
       {amount

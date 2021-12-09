@@ -7,6 +7,7 @@ class CatalogStore extends StoreModule {
   initState() {
     return {
       items: [],
+      head: ''
     };
   }
 
@@ -19,6 +20,17 @@ class CatalogStore extends StoreModule {
     this.setState({
       items: json.result.items,
     });
+  }
+
+  async getItemInfo(id) {
+    try {
+      const res = await fetch(`/api/v1/articles/${id}`);
+      const json = await res.json();
+      
+      return json.result;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
 
