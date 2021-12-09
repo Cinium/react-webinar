@@ -18,12 +18,12 @@ function ItemPage({ getInfo, onAdd, setHead }) {
       <p className="ItemPage__description">{item.description}</p>
       {item.maidIn && (
         <div className="ItemPage__detail">
-          Страна производитель: <span className="ItemPage__detail-span">{item.maidIn._type}</span>
+          Страна производитель: <span className="ItemPage__detail-span">{item.maidIn.title} ({item.maidIn.code})</span>
         </div>
       )}
       {item.category && (
         <div className="ItemPage__detail">
-          Категория: <span className="ItemPage__detail-span">{item.category._type}</span>
+          Категория: <span className="ItemPage__detail-span">{item.category.title}</span>
         </div>
       )}
 

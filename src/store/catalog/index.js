@@ -24,9 +24,9 @@ class CatalogStore extends StoreModule {
 
   async getItemInfo(id) {
     try {
-      const res = await fetch(`/api/v1/articles/${id}`);
+      const res = await fetch(`/api/v1/articles/${id}?fields=*,maidIn(title,code),category(title)`);
       const json = await res.json();
-      
+
       return json.result;
     } catch (e) {
       console.log(e);
