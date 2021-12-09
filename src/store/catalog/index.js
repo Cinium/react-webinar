@@ -1,7 +1,6 @@
 import StoreModule from "../module";
 
 class CatalogStore extends StoreModule {
-
   /**
    * Начальное состояние
    */
@@ -14,11 +13,11 @@ class CatalogStore extends StoreModule {
   /**
    * Загрузка списка товаров
    */
-  async load(){
-    const response = await fetch('/api/v1/articles');
+  async load(offset = 0) {
+    const response = await fetch(`/api/v1/articles?limit=10&skip=${offset}`);
     const json = await response.json();
     this.setState({
-      items: json.result.items
+      items: json.result.items,
     });
   }
 }

@@ -5,13 +5,14 @@ import BasketSimple from "../../components/basket-simple";
 import List from "../../components/list";
 import useStore from "../../utils/use-store";
 import useSelector from "../../utils/use-selector";
+import Pages from "../../components/pages/pages";
 
 function Main() {
 
   const select = useSelector(state => ({
     items: state.catalog.items,
     amount: state.basket.amount,
-    sum: state.basket.sum
+    sum: state.basket.sum,
   }));
 
   // Загрузка тестовых данных при первом рендере
@@ -24,6 +25,7 @@ function Main() {
   const callbacks = {
     addToBasket: useCallback((_id) => store.basket.add(_id), [store]),
     openModal: useCallback(() => store.modals.open('basket'), [store]),
+    load: useCallback((offset) => store.catalog.load(offset))
   }
 
   const renders = {
@@ -36,6 +38,7 @@ function Main() {
     <Layout head={<h1>Магазин</h1>}>
       <BasketSimple onOpen={callbacks.openModal} amount={select.amount} sum={select.sum}/>
       <List items={select.items} renderItem={renders.item}/>
+      <Pages load={callbacks.load} />
     </Layout>
   );
 }
