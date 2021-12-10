@@ -1,16 +1,16 @@
-.ItemPage {
+.ItemDescription {
   padding: 0 0 0 40px;
 }
 
-.ItemPage__detail {
+.ItemDescription__detail {
   margin: 0 0 20px;
 }
 
-.ItemPage__detail-span {
+.ItemDescription__detail-span {
   font-weight: 600;
 }
 
-.ItemPage__price {
+.ItemDescription__price {
   font-weight: bold;
   font-size: 24px;
   line-height: 28px;

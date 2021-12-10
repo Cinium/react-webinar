@@ -7,7 +7,7 @@ class CatalogStore extends StoreModule {
   initState() {
     return {
       items: [],
-      head: ''
+      selectedItem: {},
     };
   }
 
@@ -18,6 +18,7 @@ class CatalogStore extends StoreModule {
     const response = await fetch(`/api/v1/articles?limit=10&skip=${offset}`);
     const json = await response.json();
     this.setState({
+      ...this.getState(),
       items: json.result.items,
     });
   }
@@ -27,7 +28,10 @@ class CatalogStore extends StoreModule {
       const res = await fetch(`/api/v1/articles/${id}?fields=*,maidIn(title,code),category(title)`);
       const json = await res.json();
 
-      return json.result;
+      this.setState({
+        ...this.getState(),
+        selectedItem: json.result
+      })
     } catch (e) {
       console.log(e);
     }
