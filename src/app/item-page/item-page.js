@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { useParams } from "react-router";
 import Layout from "../../components/layout";
 import BasketSimple from "../../components/basket-simple";
@@ -13,13 +13,13 @@ function ItemPage() {
   const callbacks = {
     addToBasket: useCallback((_id) => store.basket.add(_id), [store]),
     openModal: useCallback(() => store.modals.open("basket"), [store]),
-    getInfo: useCallback((id) => store.catalog.getItemInfo(id)),
+    getInfo: useCallback((id) => store.itemPage.getItemInfo(id)),
   };
 
   const select = useSelector((state) => ({
     amount: state.basket.amount,
     sum: state.basket.sum,
-    item: state.catalog.selectedItem
+    item: state.itemPage.selectedItem
   }));
 
   useEffect(async () => await callbacks.getInfo(item_id), []);

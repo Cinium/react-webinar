@@ -10,7 +10,7 @@ class Store {
     // Состояние приложения (данные всех модулей)
     this.state = {};
     // Подписчики на изменение state
-    this.listners = [];
+    this.listeners = [];
 
     // Модули
     this.modules = {};
@@ -28,10 +28,10 @@ class Store {
    * @param callback {Function}
    */
   subscribe(callback) {
-    this.listners.push(callback);
+    this.listeners.push(callback);
     // Возвращаем функцию для отписки
     return () => {
-      this.listners = this.listners.filter(item => item !== callback);
+      this.listeners = this.listeners.filter(item => item !== callback);
     }
   }
 
@@ -50,8 +50,8 @@ class Store {
   setState(newState) {
     this.state = newState;
     // Оповещаем всех подписчиков об изменении стейта
-    for (const lister of this.listners) {
-      lister(this.state);
+    for (const listener of this.listeners) {
+      listener(this.state);
     }
   }
 
@@ -84,6 +84,10 @@ class Store {
    */
   get catalog(){
     return this.get('catalog');
+  }
+
+  get itemPage(){
+    return this.get('itemPage');
   }
 }
 

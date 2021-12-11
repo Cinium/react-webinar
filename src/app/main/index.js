@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import Item from "../../components/item";
 import Layout from "../../components/layout";
 import BasketSimple from "../../components/basket-simple";
@@ -10,6 +10,7 @@ import Pages from "../../components/pages/pages";
 function Main() {
   const select = useSelector((state) => ({
     items: state.catalog.items,
+    page: state.catalog.page,
     amount: state.basket.amount,
     sum: state.basket.sum,
   }));
@@ -24,7 +25,7 @@ function Main() {
   const callbacks = {
     addToBasket: useCallback((_id) => store.basket.add(_id), [store]),
     openModal: useCallback(() => store.modals.open("basket"), [store]),
-    load: useCallback((offset) => store.catalog.load(offset)),
+    load: useCallback((offset, page) => store.catalog.load(offset, page)),
   };
 
   const renders = {
@@ -44,7 +45,7 @@ function Main() {
         sum={select.sum}
       />
       <List items={select.items} renderItem={renders.item} />
-      <Pages load={callbacks.load} />
+      <Pages load={callbacks.load} page={select.page} />
     </Layout>
   );
 }

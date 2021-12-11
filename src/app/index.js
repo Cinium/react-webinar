@@ -18,7 +18,7 @@ function App() {
       <Routes>
         <Route
           path="/items/:item_id"
-          element={<ItemPage  />}
+          element={<ItemPage />}
         />
         <Route path="/" element={<Main />} />
       </Routes>

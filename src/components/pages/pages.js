@@ -1,25 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import "./pages.css";
 
-function Pages({ load }) {
-  const [currentPage, setCurrentPage] = useState(1);
-
+function Pages({ load, page }) {
   function changePage(e) {
     const page = Number(e.target.textContent);
-    setCurrentPage(page);
-
-    load((page - 1) * 10);
+    const offset = (page - 1) * 10;
+    load(offset, page);
   }
 
   function getPaginationGroup() {
     let start;
 
-    if (currentPage === 1 || currentPage === 2) {
+    if (page === 1 || page === 2) {
       start = 0;
-    } else if (currentPage < 11 && currentPage > 7) {
-      start = Math.floor((currentPage - 1) / 5) * 5;
+    } else if (page < 11 && page > 7) {
+      start = Math.floor((page - 1) / 5) * 5;
     } else {
-      start = currentPage - 3;
+      start = page - 3;
     }
 
     return new Array(5).fill().map((_, idx) => start + idx + 1);
@@ -27,15 +24,15 @@ function Pages({ load }) {
 
   return (
     <div className="Pages">
-      {currentPage > 3 && (
+      {page > 3 && (
         <>
           <span
             onClick={changePage}
-            className={`Pages__link ${currentPage === 1 ? "Pages__link_active" : ""}`}
+            className={`Pages__link ${page === 1 ? "Pages__link_active" : ""}`}
           >
             1
           </span>
-          {currentPage > 4 && <span>...</span>}
+          {page > 4 && <span>...</span>}
         </>
       )}
 
@@ -43,7 +40,7 @@ function Pages({ load }) {
         <span
           key={index}
           onClick={changePage}
-          className={`Pages__link ${currentPage === item ? "Pages__link_active" : ""}`}
+          className={`Pages__link ${page === item ? "Pages__link_active" : ""}`}
         >
           {item}
         </span>
