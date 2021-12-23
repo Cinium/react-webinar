@@ -1,4 +1,17 @@
 import StoreModule from "../module";
+import qs from "qs";
+
+const QS_OPTIONS = {
+  stringify: {
+    addQueryPrefix: true,
+    arrayFormat: "comma",
+    encode: false,
+  },
+  parse: {
+    ignoreQueryPrefix: true,
+    comma: true,
+  },
+};
 
 class CatalogStore extends StoreModule {
   /**
@@ -7,21 +20,122 @@ class CatalogStore extends StoreModule {
   initState() {
     return {
       items: [],
-      page: 1,
-      limit: 10
+      count: 0,
+      categories: [],
+      params: {
+        page: 1,
+        limit: 10,
+        sort: "key",
+        category: "all",
+        query: "",
+      },
+      waiting: true,
     };
+  }
+
+  /**
+   * Инициализация параметров.
+   * Восстановление из query string адреса
+   * @param params
+   * @return {Promise<void>}
+   */
+  async initParams(params = {}) {
+    // Параметры из URl. Их нужно валидирвать, приводить типы и брать толкьо нужные
+    const urlParams = qs.parse(window.location.search, QS_OPTIONS.parse) || {};
+    let validParams = {};
+    if (urlParams.page) validParams.page = Number(urlParams.page) || 1;
+    if (urlParams.limit) validParams.limit = Number(urlParams.limit) || 10;
+    if (urlParams.sort) validParams.sort = urlParams.sort;
+    if (urlParams.query) validParams.query = urlParams.query;
+    if (urlParams.category) validParams.category = urlParams.category;
+
+    // Итоговые параметры из начальных, из URL и из переданных явно
+    const newParams = { ...this.initState().params, ...validParams, ...params };
+    // Установка параметров и подгрузка данных
+    await this.setParams(newParams, true);
+  }
+
+  /**
+   * Сброс параметров к начальным
+   * @param params
+   * @return {Promise<void>}
+   */
+  async resetParams(params = {}) {
+    // Итоговые параметры из начальных, из URL и из переданных явно
+    const newParams = { ...this.initState().params, ...params };
+    // Установк параметров и подгрузка данных
+    await this.setParams(newParams);
+  }
+
+  async getCategories() {
+    const res = await fetch(`/api/v1/categories?limit=*&fields=_id,parent,title,name`);
+    const json = await res.json();
+    const items = json.result.items;
+
+    const getNestLevel = (item, nest = 0) => {
+      const parent = items.find((i) => i._id === item.parent._id);
+      if (parent.parent) {
+        nest += 1;
+        getNestLevel(parent, nest);
+      }
+      return nest + 1;
+    }
+
+    const categories = items.map((item) => ({
+      ...item,
+      nesting: item.parent ? getNestLevel(item) : 0,
+    }));
+
+    const sortedCategories = categories.reduce((prev, curr) => {
+      let parent = prev.find((i) => curr.parent && i._id === curr.parent._id);
+      let index = prev.indexOf(parent);
+      index = index !== -1 ? index + 1 : prev.length;
+      prev.splice(index, 0, curr);
+      return prev;
+    }, []);
+
+    this.setState({
+      ...this.getState(),
+      categories: sortedCategories,
+    });
   }
 
   /**
    * Загрузка списка товаров
    */
-  async load(offset = 0, page = 1, limit = 10) {
-    const response = await fetch(`/api/v1/articles?limit=${limit}&skip=${offset}`);
-    const json = await response.json();
+  async setParams(params = {}, historyReplace = false) {
+    const newParams = { ...this.getState().params, ...params};
     this.setState({
-      items: json.result.items,
-      page
+      ...this.getState(),
+      params: newParams,
+      waiting: true,
     });
+
+    const skip = (newParams.page - 1) * newParams.limit;
+    const response = await fetch(
+      `/api/v1/articles?limit=${newParams.limit}&skip=${skip}&fields=items(*),count&sort=${
+        newParams.sort
+      }&search[query]=${newParams.query}${
+        newParams.category !== "all" ? `&search[category]=${newParams.category}` : ""
+      }`
+    );
+    const json = await response.json();
+
+    this.setState({
+      ...this.getState(),
+      items: json.result.items,
+      count: json.result.count,
+      waiting: false,
+    });
+
+    // Запоминаем параметры в URL
+    let queryString = qs.stringify(newParams, QS_OPTIONS.stringify);
+    const url = window.location.pathname + queryString + window.location.hash;
+    if (historyReplace) {
+      window.history.replaceState({}, "", url);
+    } else {
+      window.history.pushState({}, "", url);
+    }
   }
 }
 

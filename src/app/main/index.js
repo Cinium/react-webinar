@@ -1,51 +1,26 @@
-import React, { useCallback, useEffect } from "react";
-import Item from "../../components/item";
+import React from "react";
 import Layout from "../../components/layout";
-import BasketSimple from "../../components/basket-simple";
-import List from "../../components/list";
 import useStore from "../../utils/use-store";
-import useSelector from "../../utils/use-selector";
-import Pages from "../../components/pages/pages";
+import Header from "../../containers/header";
+import CatalogFilter from "../../containers/catalog-filter";
+import CatalogList from "../../containers/catalog-list";
+import useInit from "../../utils/use-init";
 
 function Main() {
-  const select = useSelector((state) => ({
-    items: state.catalog.items,
-    page: state.catalog.page,
-    amount: state.basket.amount,
-    sum: state.basket.sum,
-  }));
-
-  // Загрузка тестовых данных при первом рендере
-  useEffect(async () => {
-    await store.catalog.load();
-  }, []);
 
   const store = useStore();
 
-  const callbacks = {
-    addToBasket: useCallback((_id) => store.basket.add(_id), [store]),
-    openModal: useCallback(() => store.modals.open("basket"), [store]),
-    load: useCallback((offset, page) => store.catalog.load(offset, page)),
-  };
-
-  const renders = {
-    item: useCallback(
-      (item) => {
-        return <Item item={item} onAdd={callbacks.addToBasket} />;
-      },
-      [callbacks.addToBasket]
-    ),
-  };
+  // Загрузка тестовых данных при первом рендере
+  useInit(async () => {
+    await store.catalog.getCategories();
+    await store.catalog.initParams();
+  }, [], {backForward: true});
 
   return (
     <Layout head={<h1>Магазин</h1>}>
-      <BasketSimple
-        onOpen={callbacks.openModal}
-        amount={select.amount}
-        sum={select.sum}
-      />
-      <List items={select.items} renderItem={renders.item} />
-      <Pages load={callbacks.load} page={select.page} />
+      <Header/>
+      <CatalogFilter/>
+      <CatalogList/>
     </Layout>
   );
 }

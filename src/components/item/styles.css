@@ -16,13 +16,6 @@
 .Item__title {
     width: 100%;
     padding: 20px 10px;
-    color: black;
-    text-decoration: none;
-}
-
-.Item__title:hover {
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .Item__right {
