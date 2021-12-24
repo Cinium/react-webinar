@@ -1,0 +1,32 @@
+/* Пункт списка */
+.ArticleEditForm {
+  padding: 20px 35px;
+}
+
+.ArticleEditForm-Prop {
+  margin: 20px 0;
+}
+
+.ArticleEditForm-Label{
+  margin-bottom: 15px;
+  display: block;
+}
+
+.ArticleEditForm-Value{
+  min-width: fit-content;
+}
+
+.ArticleEditForm-Description {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ArticleEditForm-Description-input {
+  min-height: 100px;
+}
+
+.ArticleEditForm-Error{
+  color: red;
+  margin-bottom: 10px;
+}

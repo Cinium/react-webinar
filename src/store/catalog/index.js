@@ -68,6 +68,11 @@ class CatalogStore extends StoreModule {
   }
 
   async getCategories() {
+    this.setState({
+      ...this.getState(),
+      waiting: true,
+    });
+
     const res = await fetch(`/api/v1/categories?limit=*&fields=_id,parent,title,name`);
     const json = await res.json();
     const items = json.result.items;
@@ -97,6 +102,7 @@ class CatalogStore extends StoreModule {
     this.setState({
       ...this.getState(),
       categories: sortedCategories,
+      waiting: false
     });
   }
 

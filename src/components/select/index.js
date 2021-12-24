@@ -3,19 +3,19 @@ import propTypes from "prop-types";
 import {cn} from '@bem-react/classname'
 import './styles.css';
 
-function Select(props){
+function Select({ onChange, value, options }){
 
   // CSS классы по БЭМ
   const className = cn('Select');
 
   const onSelect = useCallback((e) => {
-    props.onChange(e.target.value);
-  }, [props.onChange])
+    onChange(e.target.value);
+  }, [onChange])
 
   return (
-    <select className={className()} onChange={onSelect} value={props.value}>
-      {props.options.map(item => (
-        <option key={item.value} value={item.value}>{item.title}</option>
+    <select className={className()} onChange={onSelect} value={value}>
+      {options.map(item => (
+        <option key={item.value || item._id} value={item.value}>{item.title}</option>
       ))}
     </select>
   )
