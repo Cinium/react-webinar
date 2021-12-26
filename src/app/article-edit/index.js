@@ -16,20 +16,32 @@ function ArticleEdit() {
   // Начальная загрузка
   useInit(async () => {
     await store.get("article").load(params.id);
-    await store.get("article").getCountries();
-    await store.get("catalog").getCategories();
+    await store.get("countries").load();
+    await store.get("categories").load();
   }, [params.id]);
 
   const select = useSelector((state) => ({
     article: state.article.data,
     waiting: state.article.waiting,
-    countries: state.article.countries,
-    categories: state.catalog.categories,
-    error: state.article.error
+    countries: state.countries.countries,
+    categories: state.categories.categories,
+    error: state.article.error,
   }));
 
   const callbacks = {
     updateArticle: useCallback((data) => store.get("article").update(data), [store]),
+  };
+
+  const options = {
+    categories: select.categories.map((category) => ({
+      ...category,
+      value: category._id,
+      title: "- ".repeat(category.nesting) + category.title,
+    })),
+    countries: select.countries.map((country) => ({
+      ...country,
+      value: country._id,
+    })),
   };
 
   return (
@@ -40,8 +52,8 @@ function ArticleEdit() {
         <ArticleEditForm
           article={select.article}
           onSave={callbacks.updateArticle}
-          categories={select.categories}
-          countries={select.countries}
+          categories={options.categories}
+          countries={options.countries}
           error={select.error}
         />
       </Spinner>

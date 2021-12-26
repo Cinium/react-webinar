@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import propTypes from "prop-types";
 import { cn } from "@bem-react/classname";
 import "./styles.css";
@@ -15,28 +15,24 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
     onSave(inputData);
   }
 
-  function handleChange(e) {
-    // если ивент объект, а не строка, значит пришел не из компонента Select
-    if (typeof e === "object") {
-      const name = e.target.id;
-      const value = e.target.value;
-      setInputData({ ...inputData, [name]: value });
-      return;
-    }
+  // const handleChange = ({ name, value }) => {
+  //   if (typeof e === "object") return setInputData({ ...inputData, [name]: value });
 
-    const country = countries.find((country) => country.title === e);
-    if (!country) {
-      const category = categories.find((category) => category.title === e);
-      setInputData({ ...inputData, category });
-      return;
-    }
-    setInputData({ ...inputData, maidIn: country });
-  }
+  //   const maidIn = countries.find((country) => country.title === e);
+  //   if (maidIn) return setInputData({ ...inputData, maidIn });
+
+  //   const category = categories.find((category) => category.title === e);
+  //   setInputData({ ...inputData, category });
+  // };
+
+  const handleChange = ({ name, value }) => {
+    setInputData({ ...inputData, [name]: value });
+  };
 
   return (
     <form className={className()} onSubmit={handleSubmit}>
       <div className={className("Prop")}>
-        <label htmlFor="title" className={className("Label")} >
+        <label htmlFor="title" className={className("Label")}>
           Название
         </label>
         <input
@@ -44,7 +40,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.title}
           placeholder="Название"
           className={className("Value")}
-          onChange={handleChange}
+          onChange={(e) => handleChange({ name: "title", value: e.target.value })}
         />
       </div>
 
@@ -57,15 +53,19 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.description}
           placeholder="Описание"
           className={className("Value", [className("Description-input")])}
-          onChange={handleChange}
+          onChange={(e) => handleChange({ name: "description", value: e.target.value })}
         />
       </div>
 
       <div className={className("Prop")}>
-        <label htmlFor="country" className={className("Label")}>
+        <label htmlFor="maidIn" className={className("Label")}>
           Страна производитель:
         </label>
-        <Select onChange={handleChange} value={inputData.maidIn?.title} options={countries || []} />
+        <Select
+          onChange={(e) => handleChange({ name: "maidIn", value: { _id: e } })}
+          value={inputData.maidIn?.title}
+          options={countries || []}
+        />
       </div>
 
       <div className={className("Prop")}>
@@ -73,7 +73,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           Категория:
         </label>
         <Select
-          onChange={handleChange}
+          onChange={(e) => handleChange({ name: "category", value: { _id: e } })}
           value={inputData.category?.title}
           options={categories || []}
         />
@@ -88,7 +88,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.edition}
           placeholder="Год выпуска"
           className={className("Value")}
-          onChange={handleChange}
+          onChange={(e) => handleChange({ name: "edition", value: e.target.value })}
         />
       </div>
 
@@ -101,13 +101,10 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={numberFormat(article.price)}
           placeholder="Цена"
           className={className("Value")}
-          onChange={handleChange}
+          onChange={(e) => handleChange({ name: "price", value: e.target.value })}
         />
       </div>
-      <span
-        className={className("Error")}
-        style={{ display: error ? "block" : "none" }}
-      >
+      <span className={className("Error")} style={{ display: error ? "block" : "none" }}>
         Что-то пошло не так...
       </span>
       <button type="submit">Сохранить</button>

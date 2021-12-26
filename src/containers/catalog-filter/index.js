@@ -12,7 +12,7 @@ function CatalogFilter() {
     sort: state.catalog.params.sort,
     query: state.catalog.params.query,
     category: state.catalog.params.category,
-    categories: state.catalog.categories,
+    categories: state.categories.categories,
   }));
 
   // Опции для полей

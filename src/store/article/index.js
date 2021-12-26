@@ -48,7 +48,17 @@ class ArticleStore extends StoreModule {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          price:
+            typeof data.price === "string"
+              ? parseInt(data.price.replace(/\s/g, ""), 10)
+              : data.price,
+          edition:
+            typeof data.edition === "string"
+              ? parseInt(data.edition.replace(/\s/g, ""), 10)
+              : data.edition,
+        }),
       });
       const json = await res.json();
 
@@ -58,34 +68,9 @@ class ArticleStore extends StoreModule {
       this.updateState({ error: true });
       setTimeout(() => {
         this.updateState({ error: false });
-      }, 5000)
+      }, 5000);
     } finally {
       this.updateState({ waiting: false });
-    }
-  }
-
-  async getCountries() {
-    this.setState({
-      ...this.getState(),
-      waiting: true,
-    });
-
-    try {
-      const res = await fetch(`/api/v1/countries?limit=*&fields=_id,title`);
-      const json = await res.json();
-
-      this.setState({
-        ...this.getState(),
-        countries: json.result.items,
-      });
-    } catch (e) {
-      console.log(e);
-      this.updateState({ error: true });
-    } finally {
-      this.setState({
-        ...this.getState(),
-        waiting: false,
-      });
     }
   }
 }
