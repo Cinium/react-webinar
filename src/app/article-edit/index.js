@@ -26,10 +26,15 @@ function ArticleEdit() {
     countries: state.countries.countries,
     categories: state.categories.categories,
     error: state.article.error,
+    editForm: state.article.editForm,
   }));
 
   const callbacks = {
-    updateArticle: useCallback((data) => store.get("article").update(data), [store]),
+    updateArticle: useCallback((id) => store.get("article").update(id), [store]),
+    change: useCallback(
+      (name, value) => store.get("article").setEditFormData({ name, value }),
+      [store]
+    ),
   };
 
   const options = {
@@ -55,6 +60,8 @@ function ArticleEdit() {
           categories={options.categories}
           countries={options.countries}
           error={select.error}
+          change={callbacks.change}
+          form={select.editForm}
         />
       </Spinner>
     </Layout>

@@ -1,33 +1,25 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import propTypes from "prop-types";
 import { cn } from "@bem-react/classname";
 import "./styles.css";
 import numberFormat from "../../utils/number-format";
 import Select from "../select";
 
-function ArticleEditForm({ article, onSave, countries, categories, error }) {
+function ArticleEditForm({ article, onSave, countries, categories, error, change, form }) {
   // CSS классы по БЭМ
   const className = cn("ArticleEditForm");
-  const [inputData, setInputData] = useState(article);
 
   function handleSubmit(e) {
     e.preventDefault();
-    onSave(inputData);
+    onSave(article._id);
   }
 
-  // const handleChange = ({ name, value }) => {
-  //   if (typeof e === "object") return setInputData({ ...inputData, [name]: value });
-
-  //   const maidIn = countries.find((country) => country.title === e);
-  //   if (maidIn) return setInputData({ ...inputData, maidIn });
-
-  //   const category = categories.find((category) => category.title === e);
-  //   setInputData({ ...inputData, category });
-  // };
-
-  const handleChange = ({ name, value }) => {
-    setInputData({ ...inputData, [name]: value });
-  };
+  const onChangeHandler = useCallback(
+    (name) => {
+      return (e) => change(name, e.target?.value || { _id: e });
+    },
+    [change]
+  );
 
   return (
     <form className={className()} onSubmit={handleSubmit}>
@@ -40,7 +32,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.title}
           placeholder="Название"
           className={className("Value")}
-          onChange={(e) => handleChange({ name: "title", value: e.target.value })}
+          onChange={onChangeHandler("title")}
         />
       </div>
 
@@ -53,7 +45,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.description}
           placeholder="Описание"
           className={className("Value", [className("Description-input")])}
-          onChange={(e) => handleChange({ name: "description", value: e.target.value })}
+          onChange={onChangeHandler("description")}
         />
       </div>
 
@@ -62,8 +54,8 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           Страна производитель:
         </label>
         <Select
-          onChange={(e) => handleChange({ name: "maidIn", value: { _id: e } })}
-          value={inputData.maidIn?.title}
+          onChange={onChangeHandler("maidIn")}
+          value={form.maidIn?.title}
           options={countries || []}
         />
       </div>
@@ -73,8 +65,8 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           Категория:
         </label>
         <Select
-          onChange={(e) => handleChange({ name: "category", value: { _id: e } })}
-          value={inputData.category?.title}
+          onChange={onChangeHandler("category")}
+          value={form.category?.title}
           options={categories || []}
         />
       </div>
@@ -88,7 +80,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={article.edition}
           placeholder="Год выпуска"
           className={className("Value")}
-          onChange={(e) => handleChange({ name: "edition", value: e.target.value })}
+          onChange={onChangeHandler("edition")}
         />
       </div>
 
@@ -101,7 +93,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
           defaultValue={numberFormat(article.price)}
           placeholder="Цена"
           className={className("Value")}
-          onChange={(e) => handleChange({ name: "price", value: e.target.value })}
+          onChange={onChangeHandler("price")}
         />
       </div>
       <span className={className("Error")} style={{ display: error ? "block" : "none" }}>
@@ -115,11 +107,20 @@ function ArticleEditForm({ article, onSave, countries, categories, error }) {
 ArticleEditForm.propTypes = {
   article: propTypes.object.isRequired,
   onSave: propTypes.func,
+  countries: propTypes.array,
+  categories: propTypes.array,
+  error: propTypes.bool,
+  change: propTypes.func,
+  form: propTypes.object
 };
 
 ArticleEditForm.defaultProps = {
   article: {},
   onSave: () => {},
+  countries: [],
+  categories: [],
+  error: false,
+  form: {}
 };
 
 export default React.memo(ArticleEditForm);

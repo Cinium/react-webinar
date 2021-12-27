@@ -7,6 +7,7 @@ class ArticleStore extends StoreModule {
   initState() {
     return {
       data: {},
+      editForm: {},
       waiting: true,
     };
   }
@@ -18,6 +19,7 @@ class ArticleStore extends StoreModule {
     this.updateState({
       waiting: true,
       data: {},
+      editForm: {},
       error: false,
     });
 
@@ -40,38 +42,43 @@ class ArticleStore extends StoreModule {
     }
   }
 
-  async update(data) {
+  async update(_id) {
     this.updateState({ waiting: true });
+    const body = JSON.stringify(this.getState().editForm)
+
     try {
-      const res = await fetch(`/api/v1/articles/${data._id}`, {
+      const res = await fetch(`/api/v1/articles/${_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...data,
-          price:
-            typeof data.price === "string"
-              ? parseInt(data.price.replace(/\s/g, ""), 10)
-              : data.price,
-          edition:
-            typeof data.edition === "string"
-              ? parseInt(data.edition.replace(/\s/g, ""), 10)
-              : data.edition,
-        }),
+        body,
       });
       const json = await res.json();
 
       this.updateState({ data: json.result });
     } catch (e) {
-      console.log(e);
       this.updateState({ error: true });
+
       setTimeout(() => {
         this.updateState({ error: false });
       }, 5000);
     } finally {
       this.updateState({ waiting: false });
     }
+  }
+
+  setEditFormData({ name, value }) {
+    if (name === "edition" || name === "price") value = value.replace(/\s/g, "");
+    if (name === "price") value = parseFloat(value.replace(",", "."));
+    if (name === "edition") value = parseInt(value, 10);
+
+    this.updateState({
+      editForm: {
+        ...this.getState().editForm,
+        [name]: value,
+      },
+    });
   }
 }
 
