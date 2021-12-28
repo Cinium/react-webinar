@@ -44,7 +44,7 @@ class ArticleStore extends StoreModule {
 
   async update(_id) {
     this.updateState({ waiting: true });
-    const body = JSON.stringify(this.getState().editForm)
+    const body = JSON.stringify(this.getState().editForm);
 
     try {
       const res = await fetch(`/api/v1/articles/${_id}`, {
@@ -69,9 +69,14 @@ class ArticleStore extends StoreModule {
   }
 
   setEditFormData({ name, value }) {
-    if (name === "edition" || name === "price") value = value.replace(/\s/g, "");
-    if (name === "price") value = parseFloat(value.replace(",", "."));
-    if (name === "edition") value = parseInt(value, 10);
+    if (typeof value === "string") {
+      value =
+        name === "price"
+          ? parseFloat(value.replace(/[^0-9\,\.]/g, "").replace(",", "."))
+          : parseInt(value.replace(/[^0-9]/g, ""), 10);
+    } else {
+      value = ''
+    }
 
     this.updateState({
       editForm: {
