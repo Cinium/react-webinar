@@ -100,8 +100,8 @@ function ArticleEditForm({ article, onSave, countries, categories, error, change
           {error?.price}
         </span>
       </div>
-      <span className={className("Error")} style={{ display: error?.isVisible ? "block" : "none" }}>
-        {error?.message}
+      <span className={className("Error")} style={{ display: error?.server ? "block" : "none" }}>
+        {error?.server}
       </span>
       <button type="submit" disabled={Object.keys(error).length > 0}>
         Сохранить

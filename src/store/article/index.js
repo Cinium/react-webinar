@@ -58,10 +58,10 @@ class ArticleStore extends StoreModule {
 
       this.updateState({ data: json.result });
     } catch (e) {
-      this.updateState({ error: { isVisible: true, message: e } });
+      this.updateState({ error: { server: 'Что-то пошло не так...' } });
 
       setTimeout(() => {
-        this.updateState({ error: false });
+        this.updateState({ error: {} });
       }, 5000);
     } finally {
       this.updateState({ waiting: false });
