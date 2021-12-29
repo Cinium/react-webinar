@@ -4,6 +4,8 @@ import { cn } from "@bem-react/classname";
 import "./styles.css";
 import numberFormat from "../../utils/number-format";
 import Select from "../select";
+import Input from "../input";
+import Textarea from "../textarea";
 
 function ArticleEditForm({ article, onSave, countries, categories, error, change, form }) {
   // CSS классы по БЭМ
@@ -16,7 +18,7 @@ function ArticleEditForm({ article, onSave, countries, categories, error, change
 
   const onChangeHandler = useCallback(
     (name) => {
-      return (e) => change(name, e.target?.value || { _id: e });
+      return (e) => change(name, e);
     },
     [change]
   );
@@ -27,9 +29,8 @@ function ArticleEditForm({ article, onSave, countries, categories, error, change
         <label htmlFor="title" className={className("Label")}>
           Название
         </label>
-        <input
-          id="title"
-          defaultValue={article.title}
+        <Input
+          value={article.title}
           placeholder="Название"
           className={className("Value")}
           onChange={onChangeHandler("title")}
@@ -40,9 +41,8 @@ function ArticleEditForm({ article, onSave, countries, categories, error, change
         <label htmlFor="description" className={className("Label")}>
           Описание
         </label>
-        <textarea
-          id="description"
-          defaultValue={article.description}
+        <Textarea
+          value={article.description}
           placeholder="Описание"
           className={className("Value", [className("Description-input")])}
           onChange={onChangeHandler("description")}
@@ -75,31 +75,37 @@ function ArticleEditForm({ article, onSave, countries, categories, error, change
         <label htmlFor="edition" className={className("Label")}>
           Год выпуска:
         </label>
-        <input
-          id="edition"
-          defaultValue={article.edition}
+        <Input
+          value={numberFormat(article.edition)}
           placeholder="Год выпуска"
           className={className("Value")}
           onChange={onChangeHandler("edition")}
         />
+        <span className={className("Error")} style={{ display: error?.edition ? "block" : "none" }}>
+          {error?.edition}
+        </span>
       </div>
 
       <div className={className("Prop")}>
         <label htmlFor="price" className={className("Label")}>
           Цена (₽)
         </label>
-        <input
-          id="price"
-          defaultValue={numberFormat(article.price)}
+        <Input
+          value={numberFormat(article.price)}
           placeholder="Цена"
           className={className("Value")}
           onChange={onChangeHandler("price")}
         />
+        <span className={className("Error")} style={{ display: error?.price ? "block" : "none" }}>
+          {error?.price}
+        </span>
       </div>
-      <span className={className("Error")} style={{ display: error ? "block" : "none" }}>
-        Что-то пошло не так...
+      <span className={className("Error")} style={{ display: error?.isVisible ? "block" : "none" }}>
+        {error?.message}
       </span>
-      <button type="submit">Сохранить</button>
+      <button type="submit" disabled={Object.keys(error).length > 0}>
+        Сохранить
+      </button>
     </form>
   );
 }
@@ -109,9 +115,9 @@ ArticleEditForm.propTypes = {
   onSave: propTypes.func,
   countries: propTypes.array,
   categories: propTypes.array,
-  error: propTypes.bool,
   change: propTypes.func,
-  form: propTypes.object
+  form: propTypes.object,
+  error: propTypes.object,
 };
 
 ArticleEditForm.defaultProps = {
@@ -119,8 +125,8 @@ ArticleEditForm.defaultProps = {
   onSave: () => {},
   countries: [],
   categories: [],
-  error: false,
-  form: {}
+  form: {},
+  error: {},
 };
 
 export default React.memo(ArticleEditForm);

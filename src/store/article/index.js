@@ -20,7 +20,7 @@ class ArticleStore extends StoreModule {
       waiting: true,
       data: {},
       editForm: {},
-      error: false,
+      error: {},
     });
 
     try {
@@ -58,7 +58,7 @@ class ArticleStore extends StoreModule {
 
       this.updateState({ data: json.result });
     } catch (e) {
-      this.updateState({ error: true });
+      this.updateState({ error: { isVisible: true, message: e } });
 
       setTimeout(() => {
         this.updateState({ error: false });
@@ -69,19 +69,28 @@ class ArticleStore extends StoreModule {
   }
 
   setEditFormData({ name, value }) {
-    if (typeof value === "string") {
-      value =
-        name === "price"
-          ? parseFloat(value.replace(/[^0-9\,\.]/g, "").replace(",", "."))
-          : parseInt(value.replace(/[^0-9]/g, ""), 10);
-    } else {
-      value = ''
+    if (name === "price" || name === "edition") {
+      value = value.replace(/\s/g, "");
+      if (/[^0-9\,\.]/g.test(value)) {
+        this.updateState({
+          error: {
+            ...this.getState().error,
+            [name]: "Допускаются только цифры",
+          },
+        });
+      } else {
+        const { [name]: value, ...rest } = this.getState().error;
+        this.updateState({ error: rest });
+      }
     }
+
+    if (name === "price") value = parseFloat(value.replace(/\,/g, '.'));
+    if (name === "edition") value = parseInt(value, 10);
 
     this.updateState({
       editForm: {
         ...this.getState().editForm,
-        [name]: value,
+        [name]: name === "maidIn" || name === "category" ? { _id: value } : value,
       },
     });
   }

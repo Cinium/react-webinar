@@ -22,10 +22,6 @@
   flex-direction: column;
 }
 
-.ArticleEditForm-Description-input {
-  min-height: 100px;
-}
-
 .ArticleEditForm-Error{
   color: red;
   margin-bottom: 10px;
